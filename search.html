@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisasi Binary Search Sempurna</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; padding: 30px 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .nav-wrapper { width: 100%; max-width: 850px; margin-bottom: 20px; }
+        .back-btn { display: inline-flex; align-items: center; text-decoration: none; color: #64748b; font-weight: 600; padding: 10px 18px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+        .back-btn:hover { background: #f1f5f9; color: #0f172a; }
+        .container { width: 100%; max-width: 850px; background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        h1 { color: #0f172a; margin-bottom: 12px; font-size: 2rem; font-weight: 700; }
+        p.desc { color: #64748b; margin-bottom: 30px; font-size: 1rem; line-height: 1.6; }
+        
+        /* PERBAIKAN TAMPILAN: Grid Kontrol Kontainer Tombol & Input yang Sejajar Sempurna */
+        .controls { background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 20px; }
+        .form-row { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; width: 100%; }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+        
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 0.88rem; font-weight: 600; color: #334155; }
+        input[type="text"], input[type="number"] { padding: 12px; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; width: 100%; background: #ffffff; }
+        input:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+        
+        /* Tombol Diatur Sejajar Bersebelahan Secara Proporsional */
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        @media (max-width: 500px) { .btn-row { grid-template-columns: 1fr; } }
+        
+        button { padding: 12px 26px; font-size: 0.95rem; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; height: 48px; width: 100%; }
+        .btn-primary { background-color: #10b981; color: white; box-shadow: 0 2px 4px rgba(16,185,129,0.1); }
+        .btn-primary:hover:not(:disabled) { background-color: #059669; }
+        .btn-secondary { background-color: #3b82f6; color: white; box-shadow: 0 2px 4px rgba(59,130,246,0.1); }
+        .btn-secondary:hover:not(:disabled) { background-color: #2563eb; }
+        button:disabled, input:disabled { background-color: #cbd5e1 !important; color: #94a3b8 !important; cursor: not-allowed; opacity: 0.7; box-shadow: none; }
+        
+        .array-wrapper { padding: 35px 20px; margin-bottom: 25px; background: #0f172a; border-radius: 12px; overflow-x: auto; }
+        .array-container { display: flex; justify-content: center; gap: 12px; }
+        .element-block { text-align: center; }
+        .box { width: 58px; height: 58px; border: 2px solid #475569; border-radius: 10px; background-color: #1e293b; color: #f8fafc; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .index-label { margin-top: 8px; font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
+        
+        .box.active-range { border-color: #3b82f6; background-color: #1e3a8a; box-shadow: 0 0 12px rgba(59,130,246,0.3); }
+        .box.mid { background-color: #eab308 !important; color: #0f172a !important; border-color: #fde047; transform: translateY(-4px); }
+        .box.found { background-color: #10b981 !important; color: white !important; border-color: #34d399; transform: scale(1.08) translateY(-4px); box-shadow: 0 0 15px rgba(16,185,129,0.5); }
+        .box.eliminated { background-color: #334155; color: #64748b; border-color: #1e293b; opacity: 0.2; transform: scale(0.92); }
+        #status-log { background: #f8fafc; padding: 16px 20px; border-left: 5px solid #10b981; border-radius: 4px 12px 12px 4px; font-size: 1rem; color: #334155; min-height: 56px; display: flex; align-items: center; border: 1px solid #e2e8f0; border-left-width: 5px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="nav-wrapper"><a href="index.html" class="back-btn">← Kembali ke Dashboard</a></div>
+    <div class="container">
+        <h1>Visualisasi Sempurna: Binary Search</h1>
+        <p class="desc">Ketikkan angka acak (bisa angka kembar). Tampilan tombol kini sejajar rapi, dan sistem mampu mendeteksi semua elemen ganda secara serentak.</p>
+        <div class="controls">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="poolInput">1. Kumpulan Angka Acak (Pisahkan dengan koma):</label>
+                    <input type="text" id="poolInput" value="5, 12, 5, 24, 5, 8, 19, 5">
+                </div>
+                <div class="input-group">
+                    <label for="targetInput">2. Angka Target:</label>
+                    <input type="number" id="targetInput" value="5">
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-secondary" id="randomBtn" onclick="generateRandomSample()">Bikin Angka Acak</button>
+                <button class="btn-primary" id="searchBtn" onclick="processAndSearch()">Urutkan & Cari Angka</button>
+            </div>
+        </div>
+        <div class="array-wrapper"><div class="array-container" id="arrayVisual"></div></div>
+        <div id="status-log">Masukkan angka acak dan target, lalu klik tombol Urutkan & Cari Angka.</div>
+    </div>
+    <script>
+        let data = [];
+        const visualContainer = document.getElementById('arrayVisual');
+        const statusLog = document.getElementById('status-log');
+        let isSearching = false;
+
+        function generateRandomSample() {
+            if(isSearching) return;
+            // Membuat barisan angka acak, terkadang sengaja disisipkan angka kembar
+            let base = [5, 10, 15, 20];
+            let sample = [];
+            for(let i=0; i<8; i++) { 
+                if(Math.random() > 0.5) { sample.push(5); } // Memperbesar peluang angka kembar 5 keluar
+                else { sample.push(Math.floor(Math.random() * 40) + 1); }
+            }
+            document.getElementById('poolInput').value = sample.join(', ');
+            document.getElementById('targetInput').value = 5;
+            statusLog.innerText = "Sampel baru berhasil dimasukkan dengan rapi.";
+            prepareArray();
+        }
+
+        function prepareArray() {
+            let inputStr = document.getElementById('poolInput').value;
+            let items = inputStr.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+
+            if(items.length === 0) {
+                statusLog.innerText = "Error: Input tidak valid!";
+                return false;
+            }
+            if(items.length > 10) {
+                items = items.slice(0, 10);
+                document.getElementById('poolInput').value = items.join(', ');
+            }
+
+            items.sort((a, b) => a - b);
+            data = items;
+            renderArray();
+            return true;
+        }
+
+        function renderArray() {
+            visualContainer.innerHTML = '';
+            data.forEach((val, idx) => {
+                const block = document.createElement('div');
+                block.className = 'element-block';
+                const box = document.createElement('div');
+                box.className = 'box';
+                box.id = `box-${idx}`;
+                box.innerText = val;
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'index-label';
+                indexLabel.innerText = `idx [${idx}]`;
+                block.appendChild(box);
+                block.appendChild(indexLabel);
+                visualContainer.appendChild(block);
+            });
+        }
+
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        async function processAndSearch() {
+            if (isSearching) return;
+            const target = parseInt(document.getElementById('targetInput').value);
+            if (isNaN(target)) { statusLog.innerText = "Pemberitahuan: Masukkan angka target!"; return; }
+
+            if(!prepareArray()) return;
+
+            isSearching = true;
+            document.getElementById('searchBtn').disabled = true;
+            document.getElementById('randomBtn').disabled = true;
+            document.getElementById('poolInput').disabled = true;
+            document.getElementById('targetInput').disabled = true;
+            
+            statusLog.innerText = "Data diurutkan otomatis demi kelayakan Binary Search. Memulai simulasi...";
+            await sleep(1000);
+
+            let low = 0;
+            let high = data.length - 1;
+            let foundIndices = [];
+
+            while (low <= high) {
+                for(let i=low; i<=high; i++) { 
+                    const currentBox = document.getElementById(`box-${i}`);
+                    if(currentBox) currentBox.classList.add('active-range'); 
+                }
+                
+                let mid = Math.floor((low + high) / 2);
+                const midBox = document.getElementById(`box-${mid}`);
+                statusLog.innerText = `Mengecek area indeks [${low}] s/d [${high}]. Mengambil nilai tengah...`;
+                await sleep(900);
+
+                if(midBox) { midBox.classList.remove('active-range'); midBox.classList.add('mid'); }
+                statusLog.innerText = `Mengevaluasi indeks [${mid}] bernilai (${data[mid]}). Apakah cocok dengan target (${target})?`;
+                await sleep(1400);
+
+                if (data[mid] === target) {
+                    statusLog.innerText = `Sistem menemukan kecocokan di indeks [${mid}]. Melakukan pengecekan ekspansi ganda ke kiri & kanan...`;
+                    await sleep(1000);
+
+                    // LOGIKA BARU: Ekspansi pencarian ke kiri dan kanan untuk menjaring semua angka kembar
+                    foundIndices.push(mid);
+                    
+                    // Cek arah kiri dari titik tengah
+                    let left = mid - 1;
+                    while(left >= 0 && data[left] === target) {
+                        foundIndices.push(left);
+                        left--;
+                    }
+                    // Cek arah kanan dari titik tengah
+                    let right = mid + 1;
+                    while(right < data.length && data[right] === target) {
+                        foundIndices.push(right);
+                        right++;
+                    }
+                    break; // Keluar dari loop pencarian utama karena semua kembaran sudah terdeteksi
+                } 
+                else if (data[mid] < target) {
+                    statusLog.innerText = `Karena ${data[mid]} < ${target}, eliminasi semua data di sebelah kiri indeks [${mid}].`;
+                    await sleep(1100);
+                    for (let i = low; i <= mid; i++) { if(document.getElementById(`box-${i}`)) document.getElementById(`box-${i}`).className = 'box eliminated'; }
+                    low = mid + 1;
+                } 
+                else {
+                    statusLog.innerText = `Karena ${data[mid]} > ${target}, eliminasi semua data di sebelah kanan indeks [${mid}].`;
+                    await sleep(1100);
+                    for (let i = mid; i <= high; i++) { if(document.getElementById(`box-${i}`)) document.getElementById(`box-${i}`).className = 'box eliminated'; }
+                    high = mid - 1;
+                }
+
+                for(let i=0; i<data.length; i++) {
+                    const el = document.getElementById(`box-${i}`);
+                    if(el) el.classList.remove('active-range');
+                }
+                await sleep(400);
+            }
+
+            // Bersihkan sisa warna penanda range, lalu beri warna hijau pada semua indeks angka kembar yang ditemukan
+            for(let i=0; i<data.length; i++) {
+                const el = document.getElementById(`box-${i}`);
+                if(el && !el.classList.contains('eliminated')) el.className = 'box eliminated';
+            }
+
+            if (foundIndices.length > 0) {
+                foundIndices.forEach(idx => {
+                    const box = document.getElementById(`box-${idx}`);
+                    if(box) box.className = 'box found';
+                });
+                statusLog.innerText = `BERHASIL! Menemukan ${foundIndices.length} buah angka (${target}) pada barisan data (Indeks: [${foundIndices.sort((a,b)=>a-b).join(', ')}]).`;
+            } else {
+                statusLog.innerText = `Pencarian Selesai: Angka target ${target} tidak ditemukan dalam daftar data ini.`;
+            }
+
+            isSearching = false;
+            document.getElementById('searchBtn').disabled = false;
+            document.getElementById('randomBtn').disabled = false;
+            document.getElementById('poolInput').disabled = false;
+            document.getElementById('targetInput').disabled = false;
+        }
+
+        prepareArray();
+    </script>
+</body>
+</html>
