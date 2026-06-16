@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Visualisasi Algoritma Interaktif V3</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #0f172a;
+            --accent-sort: #ef4444;
+            --accent-sort-hover: #dc2626;
+            --accent-search: #10b981;
+            --accent-search-hover: #059669;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #334155;
+            --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; line-height: 1.5; }
+        header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; text-align: center; padding: 50px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        header h1 { font-size: 2.5rem; margin-bottom: 12px; font-weight: 700; letter-spacing: -0.05em; }
+        header p { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+        main { flex: 1; max-width: 1000px; width: 100%; margin: 0 auto; padding: 50px 20px; }
+        .grid { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 35px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); width: calc(50% - 15px); min-width: 300px; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; }
+        .card-sorting::before { background-color: var(--accent-sort); }
+        .card-searching::before { background-color: var(--accent-search); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .card h2 { font-size: 1.6rem; margin-bottom: 15px; color: #0f172a; font-weight: 600; }
+        .card p { color: var(--text-muted); margin-bottom: 30px; flex-grow: 1; font-size: 1rem; line-height: 1.6; }
+        .btn { display: block; text-align: center; padding: 14px 24px; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: background-color 0.2s; }
+        .btn-sorting { background-color: var(--accent-sort); }
+        .btn-sorting:hover { background-color: var(--accent-sort-hover); }
+        .btn-searching { background-color: var(--accent-search); }
+        .btn-searching:hover { background-color: var(--accent-search-hover); }
+        footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid #e2e8f0; background-color: #fff; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Media Pembelajaran Algoritma </h1>
+        <p>Aplikasi visualisasi dinamis. Masukkan angka acak pilihan Anda sendiri dan lihat bagaimana algoritma memprosesnya secara instan.</p>
+    </header>
+    <main>
+        <div class="grid">
+            <div class="card card-sorting">
+                <h2>Bubble Sort (Dinamis)</h2>
+                <p>Input deretan angka acak sesuka Anda. Komputer akan mengonversinya menjadi grafik batang dan mengurutkannya langkah demi langkah.</p>
+                <a href="sorting.html" class="btn btn-sorting">Buka Modul Pengurutan</a>
+            </div>
+            <div class="card card-searching">
+                <h2>Binary Search (Dinamis)</h2>
+                <p>Input angka acak & angka target. Sistem akan mengurutkan array tersebut secara otomatis terlebih dahulu, lalu mensimulasikan pencarian biner.</p>
+                <a href="searching.html" class="btn btn-searching">Buka Modul Pencarian</a>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 Lab Rekayasa Perangkat Lunak - Versi Input Pengguna Dinamis</p>
+    </footer>
+</body>
+</html>
